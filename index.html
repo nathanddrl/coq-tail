@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>CoqTail</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/1.4.6/tailwind.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Vibes&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+      /* Ajoutez vos styles personnalisés ici */
+      .site-title {
+        font-family: "Vibes", sans-serif;
+      }
+      .site-description {
+        font-family: "Roboto", sans-serif;
+      }
+      .random-cocktail-container {
+        max-width: 20%;
+      }
+      a:hover {
+        text-decoration: underline;
+        transition: all 0.7s ease-in;
+      }
+    </style>
+  </head>
+  <body class="px-20">
+    <div class="flex justify-center site-title text-2xl" id="menu_container">
+      <a href="index.html" class="px-10 py-4">Accueil</a>
+      <a href="cocktails.html" class="px-10 py-4">Cocktails</a>
+    </div>
+    <div class="flex justify-center">
+      <div class="container mx-auto px-4 w-1/2">
+        <h1 class="text-left site-title text-6xl font-bold text-primary-500">
+          CoqTail
+        </h1>
+        <p class="site-description text-xl text-secondary-500">
+          Le site CoqTail est un endroit idéal pour ceux qui aiment expérimenter
+          avec des recettes de cocktails. Que vous soyez un barman professionnel
+          ou simplement quelqu'un qui aime prendre un verre avec des amis, vous
+          trouverez sur CoqTail de nombreuses recettes intéressantes et
+          originales pour égayer vos soirées.
+        </p>
+        <div class="container flex mt-10">
+          <div
+            class="p-4 rounded-full"
+            style="background-color: rgba(253, 195, 22, 1)"
+          >
+            <h3 class="site-title text-2xl">
+              <a href="cocktails.html"> Voir tous les cocktails </a>
+            </h3>
+          </div>
+        </div>
+      </div>
+      <div class="w-1/2 h-full">
+        <img src="logo.svg" class="w-1/2 mx-auto" alt="" />
+      </div>
+    </div>
+
+    <div class="container flex flex-col m-auto text-center mt-20">
+      <h2 class="site-title text-4xl mb-10">Cocktails aléatoires</h2>
+      <div class="flex flex-row justify-around site-description">
+        <div class="random-cocktail-container flex flex-col">
+          <img src="" alt="" class="h-auto w-auto rounded-lg" />
+          <a
+            href=""
+            class="p-4 rounded-full mt-4"
+            style="background-color: rgba(253, 195, 22, 1)"
+          ></a>
+        </div>
+        <div class="random-cocktail-container flex flex-col">
+          <img src="" alt="" class="h-auto w-auto rounded-lg" />
+          <a
+            href=""
+            class="p-4 rounded-full mt-4"
+            style="background-color: rgba(253, 195, 22, 1)"
+          ></a>
+        </div>
+        <div class="random-cocktail-container flex flex-col">
+          <img src="" alt="" class="h-auto w-auto rounded-lg" />
+          <a
+            href=""
+            class="p-4 rounded-full mt-4"
+            style="background-color: rgba(253, 195, 22, 1)"
+          ></a>
+        </div>
+      </div>
+    </div>
+    <div class="absolute w-full left-0">
+      <div
+        class="w-full mt-20 flex flex-col text-center justify-center content-center left-0"
+        style="background-color: rgba(253, 195, 22, 1)"
+      >
+        <p class="py-10 site-description">
+          Découvrez ici tous nos cocktails ainsi que leurs recettes
+        </p>
+        <a
+          href=""
+          class="p-4 rounded-full inline-block mx-auto mb-4 site-title text-xl"
+          style="background-color: #f8f8f8"
+          >Voir tous les cocktails</a
+        >
+      </div>
+      <div style="background-color: #d31e78" class="h-40"></div>
+    </div>
+    <script>
+      // Récupérez l'élément HTML de la div
+      const cocktailContainers = document.querySelectorAll(
+        ".random-cocktail-container"
+      );
+      cocktailContainers.forEach((cocktailContainer) => {
+        // Récupérez l'élément HTML de l'image dans la div
+        const imgElement = cocktailContainer.querySelector("img");
+
+        // Récupérez l'élément HTML du lien dans la div
+        const linkElement = cocktailContainer.querySelector("a");
+
+        // Récupérez les données de l'API
+        fetch("https://www.thecocktaildb.com/api/json/v1/1/random.php")
+          .then((response) => response.json())
+          .then((data) => {
+            // Récupérez les informations sur le cocktail aléatoire
+            const randomCocktail = data.drinks[0];
+
+            // Mettez à jour l'attribut "src" de l'image avec le lien de l'image du cocktail
+            imgElement.setAttribute("src", randomCocktail.strDrinkThumb);
+
+            // Mettez à jour l'attribut "href" du lien avec le nom du cocktail
+            linkElement.setAttribute("href", "cocktail.html?id="+randomCocktail.idDrink);
+
+            // Mettez à jour le contenu du lien avec le nom du cocktail
+            linkElement.innerText = randomCocktail.strDrink;
+            
+          });
+      });
+    </script>
+  </body>
+</html>

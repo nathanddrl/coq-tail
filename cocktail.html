@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>CoqTail</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/1.4.6/tailwind.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Vibes&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+      /* Ajoutez vos styles personnalisés ici */
+      .site-title {
+        font-family: "Vibes", sans-serif;
+      }
+      .site-description {
+        font-family: "Roboto", sans-serif;
+      }
+      .random-cocktail-container {
+        max-width: 20%;
+      }
+      a:hover {
+        text-decoration: underline;
+        transition: all 0.7s ease-in;
+      }
+      .image-dashed
+      {
+        background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='70' ry='70' stroke='%23333' stroke-width='1' stroke-dasharray='50' stroke-dashoffset='100' stroke-linecap='round'/%3e%3c/svg%3e");
+border-radius: 70px;
+      }
+    </style>
+  </head>
+  <body class="px-20">
+    <div class="flex justify-center site-title text-2xl" id="menu_container">
+      <a href="index.html" class="px-10 py-4">Accueil</a>
+      <a href="cocktails.html" class="px-10 py-4">Cocktails</a>
+    </div>
+    <div class="flex justify-center">
+      <div class="container mx-auto px-4 w-1/2">
+        <h1
+          class="text-left site-title text-6xl font-bold text-primary-500"
+          id="cocktailName"
+        ></h1>
+        <div class="container flex flex-col items-start grow-0" id="drink_attributes">
+        </div>
+      </div>
+      <div class="w-1/2 h-full">
+        <img src="" id="cocktail_image" class="w-1/2 mx-auto" style="border-radius: 70px;" alt="" />
+      </div>
+    </div>
+
+    <div class="container flex flex-col justify-around text-center mt-20 m-auto">
+      <h2 class="site-title text-4xl mb-10">Ingrédients</h2>
+      <div id="ingredients" class="place-items-center	">
+        
+    </div>
+
+    <div class="container flex flex-col justify-around text-center mt-20">
+      <h2 class="site-title text-4xl mb-10">Recette</h2>
+      <div id="recette" class="place-items-center	">
+        
+    </div>
+    <div>
+      <div class="absolute w-full left-0">
+        <div
+          class="w-full mt-20 flex flex-col text-center justify-center content-center left-0"
+          style="background-color: rgba(253, 195, 22, 1)"
+        >
+          <p class="py-10 site-description">
+            Découvrez ici tous nos cocktails ainsi que leurs recettes
+          </p>
+          <a
+            href=""
+            class="p-4 rounded-full inline-block mx-auto mb-4 site-title text-xl"
+            style="background-color: #f8f8f8"
+            >Voir tous les cocktails</a
+          >
+        </div>
+        <div style="background-color: #d31e78" class="h-40"></div>
+      </div>
+    </div>
+
+    <!-- <div class="absolute w-full left-0">
+      <div
+        class="w-full mt-20 flex flex-col text-center justify-center content-center left-0"
+        style="background-color: rgba(253, 195, 22, 1)"
+      >
+        <p class="py-10 site-description">
+          Découvrez ici tous nos cocktails ainsi que leurs recettes
+        </p>
+        <a
+          href=""
+          class="p-4 rounded-full inline-block mx-auto mb-4 site-title text-xl"
+          style="background-color: #f8f8f8"
+          >Voir tous les cocktails</a
+        >
+      </div>
+      <div style="background-color: #d31e78" class="h-40"></div>
+    </div> -->
+    <script>
+      var urlParams = new URLSearchParams(window.location.search);
+      let drinkID = urlParams.get("id");
+      fetch(
+        "https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=" + drinkID
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          var cocktail = data.drinks[0];
+
+          document.getElementById("cocktailName").innerHTML +=
+            cocktail.strDrink;
+          document.getElementById("cocktail_image").setAttribute('src', cocktail.strDrinkThumb);
+          // Récupération de la div cible
+          var drinkAttributesDiv = document.getElementById("drink_attributes");
+
+      // Tableau des valeurs à afficher
+var values = [cocktail.strCategory, cocktail.strAlcoholic, cocktail.strGlass];
+// Boucle forEach pour créer et ajouter chaque élément
+values.forEach(function(value) {
+  // Création de l'élément
+  var elementDiv = document.createElement("div");
+  elementDiv.classList.add("p-4", "rounded-full", "mt-5");
+  elementDiv.style.backgroundColor = "rgba(253, 195, 22, 1)";
+  var elementHeading = document.createElement("h3");
+  elementHeading.classList.add("site-title", "text-2xl");
+  var elementLink = document.createElement("a");
+  elementLink.setAttribute("href", "cocktails.html");
+  elementLink.textContent = value;
+
+  // Assemblage de l'élément
+  elementHeading.appendChild(elementLink);
+  elementDiv.appendChild(elementHeading);
+
+  // Ajout de l'élément à la div cible
+  drinkAttributesDiv.appendChild(elementDiv);
+
+});
+
+
+
+// Récupération de la div cible
+var ingredientsDiv = document.getElementById("ingredients");
+
+// Création de la grille d'ingrédients
+var ingredientsGrid = document.createElement("div");
+ingredientsGrid.classList.add("grid", "grid-cols-3");
+
+// Tableau des ingrédients non nuls
+var ingredients = [];
+for (var key in cocktail) {
+  if (key.startsWith("strIngredient") && cocktail[key] !== null) {
+    ingredients.push(cocktail[key]);
+  }
+}
+var ingredientsQ = [];
+for (var key in cocktail) {
+  if (key.startsWith("strMeasure") && cocktail[key] !== null) {
+    ingredientsQ.push(cocktail[key]);
+  }
+}
+
+// Boucle forEach pour ajouter chaque ingrédient à la grille
+ingredients.forEach(function(ingredient, i) {
+// Création de l'élément pour l'ingrédient
+var ingredientElement = document.createElement("img");
+ingredientElement.setAttribute("src", "https://www.thecocktaildb.com/images/ingredients/" + ingredient + ".png");
+ingredientElement.setAttribute("alt", ingredient);
+ingredientElement.classList.add("m-auto", "image-dashed");
+
+
+// Création de l'élément pour le nom de l'ingrédient
+var ingredientNameElement = document.createElement("p");
+ingredientNameElement.textContent = ingredientsQ[i]+" : "+ ingredient;
+
+// Ajout des styles à l'élément
+ingredientElement.style.width = "300px";
+ingredientElement.style.height = "auto";
+
+// Création de l'élément pour l'ingrédient complet
+var ingredientWrapper = document.createElement("div");
+ingredientWrapper.classList.add("my-2", "mb-4", "text-center");
+ingredientWrapper.appendChild(ingredientElement);
+ingredientWrapper.appendChild(ingredientNameElement);
+
+// Ajout de l'élément à la grille
+ingredientsGrid.appendChild(ingredientWrapper);
+});
+
+// Ajout de la grille d'ingrédients à la div cible
+ingredientsDiv.appendChild(ingredientsGrid);
+
+
+const recetteDiv = document.getElementById('recette');
+if(cocktail.strInstructionsFR != null){
+  var recette = cocktail.strInstructionsFR.replace(/\./g, ".<br>");
+}
+else{
+  var recette = cocktail.strInstructions.replace(/\./g, ".<br>");
+}
+console.log(recette);
+
+precette = document.createElement('p');
+precette.innerHTML =  recette;
+precette.classList.add('site-description', 'text-lg', 'leading-10');
+recetteDiv.appendChild(precette);
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>CoqTail</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/1.4.6/tailwind.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Vibes&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+      /* Ajoutez vos styles personnalisés ici */
+      .site-title {
+        font-family: "Vibes", sans-serif;
+      }
+      .site-description {
+        font-family: "Roboto", sans-serif;
+      }
+      .random-cocktail-container {
+        max-width: 20%;
+      }
+      a:hover {
+        text-decoration: underline;
+        transition: all 0.7s ease-in;
+      }
+    </style>
+  </head>
+  <body class="px-20">
+    <div class="flex justify-center site-title text-2xl" id="menu_container">
+      <a href="index.html" class="px-10 py-4">Accueil</a>
+      <a href="cocktails.html" class="px-10 py-4">Cocktails</a>
+    </div>
+    <div class="flex justify-center text-center">
+      <div class="container mx-auto px-4 w-1/2">
+        <h1
+          class="text-center mt-16 site-title text-6xl font-bold text-primary-500"
+        >
+          Liste des cocktails
+        </h1>
+        <div class="relative">
+          <input
+            type="text"
+            name=""
+            class="w-full border-solid border-2 rounded-full p-2"
+            style="border-color: rgba(253, 195, 22, 1)"
+            placeholder="Rechercher par nom de cocktails..."
+          />
+          <i class="fas fa-search absolute right-0 top-0 mt-4 mr-4 text-gray-600"></i>
+        </div>  
+        <div class="container flex items-center justify-around mt-10">
+          <select
+            id="countries"
+            style="border-color: rgba(253, 195, 22, 1)"
+            class="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-11\/12 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          >
+            <option selected>Filtre 1</option>
+            <option value="US">Option 1</option>
+            <option value="CA">Option 2</option>
+            <option value="FR">Option 3</option>
+            <option value="DE">Germany</option>
+          </select>
+          <select
+          id="countries"
+          style="border-color: rgba(253, 195, 22, 1)"
+          class="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-11\/12 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        >
+          <option selected>Filtre 2</option>
+          <option value="US">Option 1</option>
+          <option value="CA">Option 2</option>
+          <option value="FR">Option 3</option>
+          <option value="DE">Germany</option>
+        </select>
+        <select
+          id="countries"
+          style="border-color: rgba(253, 195, 22, 1)"
+          class="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-11\/12 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        >
+          <option selected>Filtre 3</option>
+          <option value="US">Option 1</option>
+          <option value="CA">Option 2</option>
+          <option value="FR">Option 3</option>
+          <option value="DE">Germany</option>
+        </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="container flex flex-col m-auto text-center mt-20">
+      <h2 class="site-title text-4xl mb-10">Liste des cocktails</h2>
+      <div
+        class="grid grid-cols-4 gap-12 site-description"
+        id="all-cocktail-container"
+      ></div>
+    </div>
+    <div class="absolute w-full left-0">
+      <div
+        class="w-full mt-20 flex flex-col text-center justify-center content-center left-0"
+        style="background-color: rgba(253, 195, 22, 1)"
+      >
+        <p class="py-10 site-description">
+          Découvrez ici tous nos cocktails ainsi que leurs recettes
+        </p>
+        <a
+          href=""
+          class="p-4 rounded-full inline-block mx-auto mb-4 site-title text-xl"
+          style="background-color: #f8f8f8"
+          >Voir tous les cocktails</a
+        >
+      </div>
+      <div style="background-color: #d31e78" class="h-40"></div>
+    </div>
+    <script src="https://use.fontawesome.com/b7fdd0b5b1.js"></script>
+
+    <script>
+      async function getCocktails() {
+        try {
+          // Afficher l'indicateur de chargement
+          const cocktails = [];
+
+          const ingredientResponse = await fetch(
+            "https://www.thecocktaildb.com/api/json/v1/1/list.php?i=list"
+          );
+          const ingredientData = await ingredientResponse.json();
+          const ingredientList = ingredientData.drinks.map(
+            (ingredient) => ingredient.strIngredient1
+          );
+
+          for (const ingredient of ingredientList) {
+            const cocktailResponse = await fetch(
+              `https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=${ingredient}`
+            );
+            const cocktailData = await cocktailResponse.json();
+            const newCocktails = cocktailData.drinks.filter(
+              (cocktail) =>
+                !cocktails.some((c) => c.idDrink === cocktail.idDrink)
+            );
+            cocktails.push(...newCocktails);
+          }
+
+          // Cacher l'indicateur de chargement
+          return cocktails;
+        } catch (error) {
+          // Gérer l'erre
+        }
+      }
+      async function displayCocktails(cocktails) {
+        for (const cocktail of cocktails) {
+          console.log(cocktail.strDrink);
+          const div = document.createElement("div");
+          div.classList.add("flex", "flex-col");
+          div.innerHTML = `
+                <img src="${cocktail.strDrinkThumb}" alt="${cocktail.strDrink}" class="h-auto w-auto rounded-lg">
+                <a href="${cocktail.idDrink}" class="p-4 rounded-full mt-4" style="background-color: rgba(253, 195, 22, 1)">${cocktail.strDrink}</a>
+              `;
+
+          const container = document.getElementById("all-cocktail-container");
+          if (container) {
+            container.appendChild(div);
+          } else {
+            console.error(
+              "L'élément HTML cible avec l'id 'all-cocktail-container' n'a pas été trouvé dans la page"
+            );
+          }
+        }
+      }
+
+      async function main() {
+        // Afficher l'indicateur de chargement
+        const cocktails = await getCocktails();
+        // Cacher l'indicateur de chargement
+        displayCocktails(cocktails);
+      }
+
+      main();
+
+      console.log("apres");
+    </script>
+  </body>
+</html>
